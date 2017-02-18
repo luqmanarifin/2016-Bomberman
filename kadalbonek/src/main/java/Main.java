@@ -28,11 +28,13 @@ public class Main {
 
         fileContent.append(line);
       }
+      
+      Strategy strategy = new Strategy(fileContent.toString());
 
       if(move.createNewFile()){
 
         FileWriter write = new FileWriter(move);
-        write.write(String.valueOf(new Random().nextInt(7)));
+        write.write(String.valueOf(strategy.getMove()));
         write.close();
       }
     } catch (IOException e) {
