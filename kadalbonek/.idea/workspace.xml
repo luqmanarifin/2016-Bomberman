@@ -7,6 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b47bc364-9d07-4c9e-9e57-9393d451bc4c" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Constant.java" afterPath="$PROJECT_DIR$/src/main/java/Constant.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Strategy.java" afterPath="$PROJECT_DIR$/src/main/java/Strategy.java" />
     </list>
     <ignored path="kadalbonek.iws" />
@@ -33,10 +35,17 @@
       <file leaf-file-name="Strategy.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Strategy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="128">
-              <caret line="272" column="42" selection-start-line="272" selection-start-column="42" selection-end-line="272" selection-end-column="42" />
+            <state relative-caret-position="1431">
+              <caret line="835" column="51" selection-start-line="835" selection-start-column="51" selection-end-line="835" selection-end-column="51" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#8105#8114#0" expanded="true" />
+                <element signature="e#10823#10832#0" expanded="true" />
+                <element signature="e#16495#16496#0" expanded="true" />
+                <element signature="e#16563#16564#0" expanded="true" />
+                <element signature="e#25064#25073#0" expanded="true" />
+                <element signature="e#25114#25123#0" expanded="true" />
+                <element signature="e#25164#25173#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -45,8 +54,8 @@
       <file leaf-file-name="Constant.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Constant.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="13" column="23" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="23" />
+            <state relative-caret-position="306">
+              <caret line="21" column="20" selection-start-line="21" selection-start-column="20" selection-end-line="21" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -55,7 +64,7 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9">
+            <state relative-caret-position="264">
               <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
               <folding />
             </state>
@@ -65,7 +74,7 @@
       <file leaf-file-name="Bomb.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Bomb.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
+            <state relative-caret-position="187">
               <caret line="18" column="17" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
               <folding />
             </state>
@@ -105,8 +114,8 @@
         <option value="$PROJECT_DIR$/src/main/java/Bomb.java" />
         <option value="$PROJECT_DIR$/src/main/java/Player.java" />
         <option value="$PROJECT_DIR$/src/main/java/Main.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Constant.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/Constant.java" />
         <option value="$PROJECT_DIR$/src/main/java/Strategy.java" />
       </list>
     </option>
@@ -252,7 +261,7 @@
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/target" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
@@ -662,12 +671,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1487481429973</updated>
-      <workItem from="1487481433450" duration="12760000" />
+      <workItem from="1487481433450" duration="34393000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12760000" />
+    <option name="totallyTimeSpent" value="34393000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="0" />
@@ -675,7 +684,7 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3291536" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3291536" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3291536" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
@@ -720,14 +729,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9">
-          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Player.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
@@ -736,9 +737,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/util/function/ToIntFunction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="47" column="8" selection-start-line="47" selection-start-column="8" selection-end-line="47" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Bomb.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
+        <state relative-caret-position="187">
           <caret line="18" column="17" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
           <folding />
         </state>
@@ -746,18 +763,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Constant.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="13" column="23" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="23" />
+        <state relative-caret-position="306">
+          <caret line="21" column="20" selection-start-line="21" selection-start-column="20" selection-end-line="21" selection-end-column="23" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Strategy.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="272" column="42" selection-start-line="272" selection-start-column="42" selection-end-line="272" selection-end-column="42" />
+        <state relative-caret-position="1431">
+          <caret line="835" column="51" selection-start-line="835" selection-start-column="51" selection-end-line="835" selection-end-column="51" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8105#8114#0" expanded="true" />
+            <element signature="e#10823#10832#0" expanded="true" />
+            <element signature="e#16495#16496#0" expanded="true" />
+            <element signature="e#16563#16564#0" expanded="true" />
+            <element signature="e#25064#25073#0" expanded="true" />
+            <element signature="e#25114#25123#0" expanded="true" />
+            <element signature="e#25164#25173#0" expanded="true" />
           </folding>
         </state>
       </provider>

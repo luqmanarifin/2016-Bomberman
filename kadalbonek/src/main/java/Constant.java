@@ -19,4 +19,6 @@ public class Constant {
   public static int BOMB_RADIUS = 90;
   public static int SUPER_POWER_UP = 91;
 
+  public static int INF = (int) 1e9;
+
 }
