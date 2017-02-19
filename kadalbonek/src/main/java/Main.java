@@ -29,7 +29,7 @@ public class Main {
         fileContent.append(line);
       }
       
-      Strategy strategy = new Strategy(fileContent.toString());
+      Strategy strategy = new Strategy(botKey, fileContent.toString());
 
       if(move.createNewFile()){
 

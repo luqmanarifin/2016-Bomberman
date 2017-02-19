@@ -15,7 +15,10 @@ public class Bomb {
   public boolean isExploding;
   public int x;
   public int y;
-  
+
+  public Bomb() {
+  }
+
   public Bomb(Player owner, int bombRadius, int bombTimer, boolean isExploding, int x, int y) {
     this.owner = owner;
     this.bombRadius = bombRadius;

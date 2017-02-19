@@ -17,15 +17,11 @@ public class Player {
   public int bombRadius;
   public int x;
   public int y;
-  
-  public Player(String name,
-          String key,
-          int points,
-          boolean killed,
-          int bombBag,
-          int bombRadius,
-          int x,
-          int y) {
+
+  public Player() {
+  }
+
+  public Player(String name, String key, int points, boolean killed, int bombBag, int bombRadius, int x, int y) {
     this.name = name;
     this.key = key;
     this.points = points;
