@@ -10,13 +10,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  *
  * @author Luqman A. Siswanto
  */
 public class Strategy {
-  private int answer;
+  private ArrayList<Integer> answer;
 
   private String botKey;
   private Player me;
@@ -29,10 +30,13 @@ public class Strategy {
   private int playerBounty;
   private int mapHeight;
   private int mapWidth;
+
+  private int[] da = {0, 0, -1, 1, 0};
+  private int[] db = {0, -1, 0, 0, 1};
   
   public Strategy(String botKey, String jsonString) {
     this.botKey = botKey;
-    answer = -1;
+    answer = new ArrayList<Integer>();
     JSONObject jsonObject = null;
     try {
       jsonObject = (JSONObject) new JSONParser().parse(jsonString);
@@ -51,6 +55,11 @@ public class Strategy {
   boolean passable(int i, int j) {
     return s[i][j] == Constant.LOWONG || s[i][j] == Constant.BOMB_RADIUS
             || s[i][j] == Constant.BOMB_BAG || s[i][j] == Constant.SUPER_POWER_UP;
+  }
+
+  boolean bombPassable(int i, int j) {
+    return (0 <= s[i][j] && s[i][j] <= 30) || s[i][j] == Constant.BOM || s[i][j] == Constant.LOWONG
+            || s[i][j] == Constant.BOMB_RADIUS || s[i][j] == Constant.BOMB_BAG || s[i][j] == Constant.SUPER_POWER_UP;
   }
 
   private void generateVisit() {
@@ -194,10 +203,19 @@ public class Strategy {
       }
     }
   }
-  
+
+  public boolean dangerousMove(int val) {
+
+  }
+
   public int getMove() {
-    if (answer == -1) solve();
-    return answer;
+    if (answer.isEmpty()) solve();
+    for (int i = 0; i < answer.size(); i++) {
+      if (!dangerousMove(answer.get(i))) {
+        return answer.get(i);
+      }
+    }
+    return 0;
   }
   
   private void solve() {
@@ -214,8 +232,59 @@ public class Strategy {
     }
   }
 
-  private boolean inDanger() {
+  // return possible direction for routing
+  int[] route(int from_a, int from_b, int to_a, int to_b) {
 
+  }
+
+  // return minimum distance to safe place
+  int distanceToSafePlace() {
+
+  }
+
+  // return minimum distance between two place
+  int minimumDistance(int from_a, int from_b, int to_a, int to_b) {
+
+  }
+
+  private boolean inDanger() {
+    for (int i = 1; i <= mapWidth; i++) {
+      for (int j = 1; j <= mapHeight; j++) {
+        if (s[i][j] == Constant.BOM) {
+          // bomb milik musuh
+          if (bombs[i][j].owner.key != me.key) {
+            if (i == me.x) {
+              int l = Math.min(j, me.y);
+              int r = Math.max(j, me.y);
+              boolean allPassable = true;
+              for (int k = l + 1; k < r; k++) {
+                if (!bombPassable(i, k)) {
+                  allPassable = false;
+                }
+              }
+              if (allPassable && r - l <= bombs[i][j].bombRadius) {
+                return true;
+              }
+            } else if (j == me.y) {
+              int l = Math.min(i, me.x);
+              int r = Math.max(i, me.x);
+              boolean allPassable = true;
+              for (int k = l + 1; k < r; k++) {
+                if (!bombPassable(k, j)) {
+                  allPassable = false;
+                }
+              }
+              if (allPassable && r - l <= bombs[i][j].bombRadius) {
+                return true;
+              }
+            }
+          } else {    // bomb punya sendiri
+
+          }
+        }
+      }
+    }
+    return false;
   }
 
   private void runFromDanger() {
