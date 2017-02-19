@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import com.sun.corba.se.impl.encoding.CDROutputStream;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -210,27 +211,30 @@ public class Strategy {
         }
       }
     }
-    for (int j = 1; j <= mapHeight; j++) {
-      for (int i = 1; i <= mapWidth; i++) {
-        System.out.print(s[i][j] + " ");
-      }
-      System.out.println();
-    }
   }
 
   public boolean dangerousMove(int val) {
     if (val == 5) {
       bombs[me.x][me.y] = new Bomb(me, me.bombRadius, Math.min(10, 3 * me.bombBag + 1), false, me.x, me.y);
       s[me.x][me.y] = Constant.BOM;
-      if (distanceToSafePlace(me.x, me.y) <= bombs[me.x][me.y].bombRadius - bombs[me.x][me.y].bombTimer + 2) return true;
+      if (distanceToSafePlace(me.x, me.y) >= bombs[me.x][me.y].bombTimer - 1) return true;
       s[me.x][me.y] = Constant.LOWONG;
     }
     if (val >= 5) val = 0;
     int ti = me.x + da[val];
     int tj = me.y + db[val];
-    if (distanceToSafePlace(ti, tj) == Constant.INF) return true;
     boolean[][] blast = getOtherBlasts();
-    if (blast[ti][tj]) return true;
+    if (distanceToSafePlace(ti, tj) == Constant.INF) return true;
+    for (int i = 1; i <= mapHeight; i++) {
+      for (int j = 1; j <= mapWidth; j++) {
+        if (s[i][j] == Constant.BOM && bombs[i][j].owner.key.equals(me.key)) {
+          if (direct(i, j, ti, tj) && distanceToSafePlace(ti, tj) >= bombs[i][j].bombTimer - 1) return true;
+        }
+        if (s[i][j] == Constant.BOM && !bombs[i][j].owner.key.equals(me.key)) {
+          if (direct(i, j, ti, tj) && blast[ti][tj] && bombs[i][j].bombTimer == 1) return true;
+        }
+      }
+    }
     return false;
   }
 
@@ -253,11 +257,13 @@ public class Strategy {
       if (!dangerousMove(answer.get(i))) {
         return answer.get(i);
       }
+      System.out.println(answer.get(i) + " dangerous move!");
     }
     return 0;
   }
   
   private void solve() {
+    System.out.println("POSISI NOW " + me.x + " " + me.y);
     if (inDanger()) {
       System.out.println("danger");
       runFromDanger();
@@ -571,7 +577,7 @@ public class Strategy {
               return true;
             }
           } else {    // bomb punya sendiri
-            if (direct(i, j, me.x, me.y) && distanceToSafePlace(me.x, me.y) <= bombs[i][j].bombRadius - bombs[i][j].bombTimer + 2) {
+            if (direct(i, j, me.x, me.y) && distanceToSafePlace(me.x, me.y) >= bombs[i][j].bombTimer - 1) {
               return true;
             }
           }
@@ -603,7 +609,7 @@ public class Strategy {
   private boolean possibleAttack() {
     boolean[][] blast = getMyBlasts();
     for (int k = 0; k < players.length; k++) {
-      if (players[k].killed) continue;
+      if (players[k].killed || players[k].key.equals(me.key)) continue;
       int[][] dist = bfs(players[k].x, players[k].y);
       for (int i = 1; i <= mapWidth; i++) {
         for (int j = 1; j <= mapHeight; j++) {
@@ -615,7 +621,7 @@ public class Strategy {
     }
     boolean[][] fakeBlast = getFakeBlasts(me.x, me.y);
     for (int k = 0; k < players.length; k++) {
-      if (players[k].killed) continue;
+      if (players[k].killed || players[k].key.equals(me.key)) continue;
       if (fakeBlast[players[k].x][players[k].y]) {
         return true;
       }
@@ -626,7 +632,7 @@ public class Strategy {
   private void attack() {
     boolean[][] blast = getMyBlasts();
     for (int k = 0; k < players.length; k++) {
-      if (players[k].killed) continue;
+      if (players[k].killed || players[k].key.equals(me.key)) continue;
       int[][] dist = bfs(players[k].x, players[k].y);
       for (int i = 1; i <= mapWidth; i++) {
         for (int j = 1; j <= mapHeight; j++) {
@@ -640,7 +646,7 @@ public class Strategy {
     }
     boolean[][] fakeBlast = getFakeBlasts(me.x, me.y);
     for (int k = 0; k < players.length; k++) {
-      if (players[k].killed) continue;
+      if (players[k].killed || players[k].key.equals(me.key)) continue;
       if (fakeBlast[players[k].x][players[k].y] && me.bombBag > 0) {
         if (!answer.contains(5)) {
           answer.add(5);
@@ -657,7 +663,7 @@ public class Strategy {
           int[][] dist = bfs(i, j);
           boolean best = true;
           for (int k = 0; k < players.length; k++) {
-            if (players[k].killed) continue;
+            if (players[k].killed || players[k].key.equals(me.key)) continue;
             if (players[k].key.equals(me.key)) continue;
             if (dist[players[k].x][players[k].y] <= dist[me.x][me.y]) {
               best = false;
@@ -679,8 +685,7 @@ public class Strategy {
           int[][] dist = bfs(i, j);
           boolean best = true;
           for (int k = 0; k < players.length; k++) {
-            if (players[k].killed) continue;
-            if (players[k].key.equals(me.key)) continue;
+            if (players[k].killed || players[k].key.equals(me.key)) continue;
             if (dist[players[k].x][players[k].y] <= dist[me.x][me.y]) {
               best = false;
               break;
@@ -848,7 +853,7 @@ public class Strategy {
       }
     }
 
-    System.out.println("pq " + p + " " + q);
+    System.out.println("pq " + p + " " + q + " " + best);
     if (p == 0) {
       answer.add(6);
     } else if (p == me.x && q == me.y) {
@@ -870,7 +875,7 @@ public class Strategy {
     int best = Constant.INF;
     int p = -1;
     for (int k = 0; k < players.length; k++) {
-      if (players[k].killed) continue;
+      if (players[k].killed || players[k].key.equals(me.key)) continue;
       int cur = minimumDistance(me.x, me.y, players[k].x, players[k].y);
       if (cur < best) {
         best = cur;
