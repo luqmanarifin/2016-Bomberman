@@ -9,6 +9,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.*;
+
 /**
  *
  * @author Luqman A. Siswanto
@@ -38,10 +40,79 @@ public class Strategy {
     } catch (ParseException e) {
       e.printStackTrace();
     }
+    generateVisit();
     for (int i = 0; i < players.length; i++) {
       if (botKey.equals(players[i].key)) {
         me = players[i];
       }
+    }
+  }
+
+  boolean passable(int i, int j) {
+    return s[i][j] == Constant.LOWONG || s[i][j] == Constant.BOMB_RADIUS
+            || s[i][j] == Constant.BOMB_BAG || s[i][j] == Constant.SUPER_POWER_UP;
+  }
+
+  private void generateVisit() {
+    String fileName = "temp.in";
+    if (currentRound == 0) {
+      for (int i = 1; i <= mapWidth; i++) {
+        for (int j = 1; j <= mapHeight; j++) {
+          if (passable(i, j)) {
+            vis[i][j] = 1;
+          } else {
+            vis[i][j] = 0;
+          }
+        }
+      }
+    } else {
+      // baca dari file
+
+      // FileReader reads text files in the default encoding.
+      FileReader fileReader = null;
+      try {
+        fileReader = new FileReader(fileName);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+
+      // Always wrap FileReader in BufferedReader.
+      BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+      try {
+        String line;
+        for (int i = 1; i <= mapWidth; i++) {
+          for (int j = 1; j <= mapHeight; j++) {
+            line = bufferedReader.readLine();
+            s[i][j] = Integer.parseInt(line);
+          }
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      // Always close files.
+      try {
+        bufferedReader.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    vis[me.x][me.y] = 1;
+
+    // tulis ke file
+    FileWriter fw = null;
+    try {
+      fw = new FileWriter(fileName);
+      BufferedWriter bw = new BufferedWriter(fw);
+      for (int i = 1; i <= mapWidth; i++) {
+        for (int j = 1; j <= mapHeight; j++) {
+          bw.write(s[i][j]);
+          bw.write("\n");
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
@@ -110,16 +181,19 @@ public class Strategy {
           } else {
             s[x][y] = Constant.BOMB_RADIUS;
           }
-        } else {
+        } else if (entity == null) {
           s[x][y] = Constant.LOWONG;
+        } else {
+          String key = (String) entity.get("Key");
+          for (int k = 0; k < players.length; k++) {
+            if (key.equals(players[k].key)) {
+              s[x][y] = k;
+            }
+          }
         }
       }
     }
-
-
   }
-
-
   
   public int getMove() {
     if (answer == -1) solve();
@@ -127,6 +201,52 @@ public class Strategy {
   }
   
   private void solve() {
-    answer = 4;
+    if (inDanger()) {
+      runFromDanger();
+    } else if (possibleAttack()) {
+      attack();
+    } else if (powerUpNearby()) {
+      takePowerUp();
+    } else if (moreBricks()) {
+      destroyBrick();
+    } else {
+      yoloMode();
+    }
+  }
+
+  private boolean inDanger() {
+
+  }
+
+  private void runFromDanger() {
+
+  }
+
+  private boolean possibleAttack() {
+
+  }
+
+  private void attack() {
+
+  }
+
+  private boolean powerUpNearby() {
+
+  }
+
+  private void takePowerUp() {
+
+  }
+
+  private boolean moreBricks() {
+
+  }
+
+  private void destroyBrick() {
+
+  }
+
+  private void yoloMode() {
+
   }
 }
