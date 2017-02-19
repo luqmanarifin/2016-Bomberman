@@ -11,12 +11,12 @@ public class Constant {
     bom
     powerups: BombBag, BombRadius, superPowerUp
   */
-  public int BOM = -1;
-  public int TEMBOK = 100;
-  public int BATA = 99;
-  public int LOWONG = 44;
-  public int BOMB_BAG = 89;
-  public int BOMB_RADIUS = 90;
-  public int SUPER_POWER_UP = 91;
+  public static int BOM = -1;
+  public static int TEMBOK = 100;
+  public static int BATA = 99;
+  public static int LOWONG = 44;
+  public static int BOMB_BAG = 89;
+  public static int BOMB_RADIUS = 90;
+  public static int SUPER_POWER_UP = 91;
 
 }

@@ -21,7 +21,7 @@ public class Strategy {
   private Player[] players;
   private Bomb[][] bombs;
   private int[][] s;
-  private boolean[][] vis;
+  private int[][] vis;
   
   private int currentRound;
   private int playerBounty;
@@ -48,13 +48,13 @@ public class Strategy {
   private Player parsePlayer(JSONObject jsonPlayer) {
     String name = (String) jsonPlayer.get("Name");
     String key = (String) jsonPlayer.get("Key");
-    int points = Integer.parseInt((String) jsonPlayer.get("Points"));
-    boolean killed = Boolean.parseBoolean((String) jsonPlayer.get("Killed"));
-    int bombBag = Integer.parseInt((String) jsonPlayer.get("BombBag"));
-    int bombRadius = Integer.parseInt((String) jsonPlayer.get("BombRadius"));
+    int points = (int) (long) (Long) jsonPlayer.get("Points");
+    boolean killed = (Boolean) jsonPlayer.get("Killed");
+    int bombBag = (int) (long) (Long) jsonPlayer.get("BombBag");
+    int bombRadius = (int) (long) (Long) jsonPlayer.get("BombRadius");
     JSONObject location = (JSONObject) jsonPlayer.get("Location");
-    int x = Integer.parseInt((String) location.get("X"));
-    int y = Integer.parseInt((String) location.get("Y"));
+    int x = (int) (long) (Long) location.get("X");
+    int y = (int) (long) (Long) location.get("Y");
 
     return new Player(name, key, points, killed, bombBag, bombRadius, x, y);
   }
@@ -68,24 +68,51 @@ public class Strategy {
       players[i] = parsePlayer(jsonPlayer);
     }
 
-    currentRound = Integer.parseInt((String) jsonObject.get("CurrentRound"));
-    playerBounty = Integer.parseInt((String) jsonObject.get("PlayerBounty"));
-    mapHeight = Integer.parseInt((String) jsonObject.get("MapHeight"));
-    mapWidth = Integer.parseInt((String) jsonObject.get("MapWidth"));
+    currentRound = (int) (long) (Long) jsonObject.get("CurrentRound");
+    playerBounty = (int) (long) (Long) jsonObject.get("PlayerBounty");
+    mapHeight = (int) (long) (Long) jsonObject.get("MapHeight");
+    mapWidth = (int) (long) (Long) jsonObject.get("MapWidth");
+
+    bombs = new Bomb[mapWidth + 5][mapHeight + 5];
+    s = new int[mapWidth + 5][mapHeight + 5];
+    vis = new int[mapWidth + 5][mapHeight + 5];
 
     JSONArray gameBlocks = (JSONArray) jsonObject.get("GameBlocks");
     for (int i = 0; i < gameBlocks.size(); i++) {
       JSONArray column = (JSONArray) gameBlocks.get(i);
       for (int j = 0; j < column.size(); j++) {
         JSONObject gameBlock = (JSONObject) column.get(j);
-
         JSONObject entity = (JSONObject) gameBlock.get("Entity");
+        String nameEntity = (entity != null? (String) entity.get("$type") : "");
         JSONObject bomb = (JSONObject) gameBlock.get("Bomb");
         JSONObject powerUp = (JSONObject) gameBlock.get("PowerUp");
-        boolean exploding = Boolean.parseBoolean((String) gameBlock.get("Exploding"));
+        boolean exploding = (Boolean) gameBlock.get("Exploding");
         JSONObject location = (JSONObject) gameBlock.get("Location");
-        int x = Integer.parseInt((String) location.get("X"));
-        int y = Integer.parseInt((String) location.get("Y"));
+        int x = (int) (long) (Long) location.get("X");
+        int y = (int) (long) (Long) location.get("Y");
+
+        if (bomb != null && !exploding) {
+          Player owner = parsePlayer((JSONObject) bomb.get("Owner"));
+          int bombRadius = (int) (long) (Long) bomb.get("BombRadius");
+          int bombTimer = (int) (long) (Long) bomb.get("BombTimer");
+          bombs[x][y] = new Bomb(owner, bombRadius, bombTimer, exploding, x, y);
+          s[x][y] = Constant.BOM;
+        } else if (nameEntity.equals("Domain.Entities.IndestructibleWallEntity, Domain")) {
+          s[x][y] = Constant.TEMBOK;
+        } else if (nameEntity.equals("Domain.Entities.DestructibleWallEntity, Domain")) {
+          s[x][y] = Constant.BATA;
+        } else if (powerUp != null) {
+          String typePowerUp = (String) powerUp.get("$type");
+          if (typePowerUp.equals("Domain.Entities.PowerUps.SuperPowerUp, Domain")) {
+            s[x][y] = Constant.SUPER_POWER_UP;
+          } else if (typePowerUp.equals("Domain.Entities.PowerUps.BombBag, Domain")) {
+            s[x][y] = Constant.BOMB_BAG;
+          } else {
+            s[x][y] = Constant.BOMB_RADIUS;
+          }
+        } else {
+          s[x][y] = Constant.LOWONG;
+        }
       }
     }
 
@@ -100,6 +127,6 @@ public class Strategy {
   }
   
   private void solve() {
-    
+    answer = 4;
   }
 }
