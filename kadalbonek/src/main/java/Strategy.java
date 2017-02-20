@@ -11,9 +11,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -63,6 +61,10 @@ public class Strategy {
   boolean bombPassable(int i, int j) {
     return (0 <= s[i][j] && s[i][j] <= 30) || s[i][j] == Constant.BOM || s[i][j] == Constant.LOWONG
             || s[i][j] == Constant.BOMB_RADIUS || s[i][j] == Constant.BOMB_BAG || s[i][j] == Constant.SUPER_POWER_UP;
+  }
+
+  boolean nonWall(int i, int j) {
+    return s[i][j] != Constant.TEMBOK;
   }
 
   private void generateVisit() {
@@ -217,7 +219,10 @@ public class Strategy {
     if (val == 5) {
       bombs[me.x][me.y] = new Bomb(me, me.bombRadius, Math.min(10, 3 * me.bombBag + 1), false, me.x, me.y);
       s[me.x][me.y] = Constant.BOM;
-      if (distanceToSafePlace(me.x, me.y) >= bombs[me.x][me.y].bombTimer - 1) return true;
+      if (distanceToSafePlace(me.x, me.y) >= bombs[me.x][me.y].bombTimer - 1) {
+        s[me.x][me.y] = Constant.LOWONG;
+        return true;
+      }
       s[me.x][me.y] = Constant.LOWONG;
     }
     if (val >= 5) val = 0;
@@ -273,6 +278,9 @@ public class Strategy {
     } else if (powerUpNearby()) {
       System.out.println("powerup");
       takePowerUp();
+    } else if (midAvailable()) {
+      System.out.println("kejar mid");
+      pursueMid();
     } else if (moreBricks()) {
       System.out.println("bricks");
       destroyBrick();
@@ -699,6 +707,122 @@ public class Strategy {
               }
             }
           }
+        }
+      }
+    }
+  }
+
+  private boolean midAvailable() {
+    for (int i = 1; i <= mapHeight; i++) {
+      for (int j = 1; j <= mapWidth; j++) {
+        if (s[i][j] == Constant.SUPER_POWER_UP) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private int[][] bfsNonWall(int si, int sj) {
+    ArrayDeque<Integer> p = new ArrayDeque<Integer>();
+    ArrayDeque<Integer> q = new ArrayDeque<Integer>();
+    int[][] dist = new int[mapWidth + 5][mapHeight + 5];
+    for (int i = 1; i <= mapWidth; i++) {
+      for (int j = 1; j <= mapHeight; j++) {
+        dist[i][j] = Constant.INF;
+      }
+    }
+    dist[si][sj] = 0;
+    p.addLast(si);
+    q.addLast(sj);
+    while (!p.isEmpty()) {
+      int ni = p.pollFirst();
+      int nj = q.pollFirst();
+      for (int i = 1; i <= 4; i++) {
+        int ti = ni + da[i];
+        int tj = nj + db[i];
+        if (valid(ti, tj) && nonWall(ti, tj)) {
+          int cur = dist[ni][nj] + (s[ti][tj] == Constant.BATA? 1 : 0);
+          if (cur < dist[ti][tj]) {
+            dist[ti][tj] = cur;
+            if (dist[ni][nj] == dist[ti][tj]) {
+              p.addFirst(ti);
+              q.addFirst(tj);
+            } else {
+              p.addLast(ti);
+              q.addLast(tj);
+            }
+          }
+        }
+      }
+    }
+    return dist;
+  }
+
+  private void pursueMid() {
+    int mi = -1, mj = -1;
+    for (int i = 1; i <= mapHeight; i++) {
+      for (int j = 1; j <= mapHeight; j++) {
+        if (s[i][j] == Constant.SUPER_POWER_UP) {
+          mi = i;
+          mj = j;
+        }
+      }
+    }
+    int[][] level = bfsNonWall(mi, mj);
+    if (level[me.x][me.y] == 0) {
+      int[] candidates = route(me.x, me.y, mi, mj);
+      for (int i = 0; i < candidates.length; i++) {
+        if (!answer.contains(candidates[i])) {
+          answer.add(candidates[i]);
+        }
+      }
+      return;
+    }
+    boolean[][] petak = new boolean[mapWidth + 5][mapHeight + 5];
+    for (int i = 1; i <= mapWidth; i++) {
+      for (int j = 1; j <= mapHeight; j++) {
+        if (level[i][j] == level[me.x][me.y] && s[i][j] == Constant.BATA) {
+          for (int d = 1; d <= 4; d++) {
+            for (int k = 1; k <= me.bombRadius; k++) {
+              int ti = i + k * da[d];
+              int tj = j + k * db[d];
+              if (!valid(ti, tj) || !passable(ti, tj)) break;
+              petak[ti][tj] = true;
+            }
+          }
+        }
+      }
+    }
+    int[][] dist = bfs(me.x, me.y);
+    double best = Constant.INF;
+    int pi = -1, pj = -1;
+    for (int i = 1; i <= mapWidth; i++) {
+      for (int j = 1; j <= mapHeight; j++) {
+        if (petak[i][j]) {
+          int bricks = getBricks(i, j);
+          if (bricks > 0) {
+            double val = (double) dist[i][j] / bricks;
+            if (val < best) {
+              best = val;
+              pi = i;
+              pj = j;
+            }
+          }
+        }
+      }
+    }
+    if (pi == me.x && pj == me.y) {
+      if (me.bombBag > 0) {
+        answer.add(5);
+      }
+    } else if (pi == -1 && pj == -1) {
+      answer.add(6);
+    } else {
+      int[] candidates = route(me.x, me.y, pi, pj);
+      for (int i = 0; i < candidates.length; i++) {
+        if (!answer.contains(candidates[i])) {
+          answer.add(candidates[i]);
         }
       }
     }
