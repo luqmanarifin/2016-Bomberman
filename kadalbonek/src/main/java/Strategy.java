@@ -58,6 +58,11 @@ public class Strategy {
             || s[i][j] == Constant.BOMB_BAG || s[i][j] == Constant.SUPER_POWER_UP;
   }
 
+  boolean visitable(int i, int j) {
+    return s[i][j] == Constant.LOWONG || s[i][j] == Constant.BOMB_RADIUS
+            || s[i][j] == Constant.BOMB_BAG || s[i][j] == Constant.SUPER_POWER_UP;
+  }
+
   boolean bombPassable(int i, int j) {
     return (0 <= s[i][j] && s[i][j] <= 30) || s[i][j] == Constant.BOM || s[i][j] == Constant.LOWONG
             || s[i][j] == Constant.BOMB_RADIUS || s[i][j] == Constant.BOMB_BAG || s[i][j] == Constant.SUPER_POWER_UP;
@@ -215,7 +220,11 @@ public class Strategy {
     }
   }
 
-  public boolean dangerousMove(int val) {
+  public boolean dangerousMove(boolean directDecision, int val) {
+    if (val == 6) {
+      boolean[][] blast = getBlasts();
+      if (blast[me.x][me.y]) return true;
+    }
     if (val == 5) {
       bombs[me.x][me.y] = new Bomb(me, me.bombRadius, Math.min(10, 3 * me.bombBag + 1), false, me.x, me.y);
       s[me.x][me.y] = Constant.BOM;
@@ -236,7 +245,11 @@ public class Strategy {
           if (direct(i, j, ti, tj) && distanceToSafePlace(ti, tj) >= bombs[i][j].bombTimer - 1) return true;
         }
         if (s[i][j] == Constant.BOM && !bombs[i][j].owner.key.equals(me.key)) {
-          if (direct(i, j, ti, tj) && blast[ti][tj] && bombs[i][j].bombTimer == 1) return true;
+          if (direct(i, j, ti, tj) && blast[ti][tj]) {
+            int distanceSafe = distanceToSafePlace(ti, tj);
+            if (!directDecision && distanceSafe >= Math.min(2, bombs[i][j].bombTimer) - 1) return true;
+            if (directDecision && distanceSafe >= bombs[i][j].bombTimer - 1) return true;
+          }
         }
       }
     }
@@ -244,34 +257,37 @@ public class Strategy {
   }
 
   public int getMove() {
-    if (answer.isEmpty()) solve();
+    boolean directDecision = solve();
     List<Integer> random = new ArrayList<Integer>();
     for (int i = 1; i <= 4; i++) random.add(i);
     Collections.shuffle(random);
     for (int i = 0; i < random.size(); i++) {
       int ti = me.x + da[random.get(i)];
       int tj = me.y + db[random.get(i)];
-      if (!answer.contains(random.get(i)) && valid(ti, tj) && passable(ti, tj)) {
+      if (!answer.contains(random.get(i)) && valid(ti, tj) && visitable(ti, tj)) {
         answer.add(random.get(i));
       }
     }
     System.out.println("moves");
     for (int i = 0; i < answer.size(); i++) System.out.print(answer.get(i) + " ");
     System.out.println();
+
     for (int i = 0; i < answer.size(); i++) {
-      if (!dangerousMove(answer.get(i))) {
+      if (!dangerousMove(directDecision, answer.get(i))) {
         return answer.get(i);
       }
       System.out.println(answer.get(i) + " dangerous move!");
     }
     return 0;
   }
-  
-  private void solve() {
+
+  // true if butuh direct
+  private boolean solve() {
     System.out.println("POSISI NOW " + me.x + " " + me.y);
     if (inDanger()) {
       System.out.println("danger");
       runFromDanger();
+      return true;
     } else if (possibleAttack()) {
       System.out.println("attack");
       attack();
@@ -288,6 +304,7 @@ public class Strategy {
       System.out.println("yolo");
       yoloMode();
     }
+    return false;
   }
 
   int[][] bfs(int start_a, int start_b) {
@@ -346,7 +363,7 @@ public class Strategy {
     for (int i = 1; i <= 4; i++) {
       int ti = from_a + da[i];
       int tj = from_b + db[i];
-      if (valid(ti, tj) && passable(ti, tj) && dist[from_a][from_b] == dist[ti][tj] + 1) {
+      if (valid(ti, tj) && visitable(ti, tj) && dist[from_a][from_b] == dist[ti][tj] + 1) {
         ret.add(i);
       }
     }
@@ -510,7 +527,7 @@ public class Strategy {
     for (int i = 1; i <= mapWidth; i++) {
       for (int j = 1; j <= mapHeight; j++) {
         safe[i][j] = !safe[i][j];
-        if (!passable(i, j)) {
+        if (!visitable(i, j)) {
           safe[i][j] = false;
         }
       }
@@ -579,6 +596,11 @@ public class Strategy {
     for (int i = 1; i <= mapWidth; i++) {
       for (int j = 1; j <= mapHeight; j++) {
         if (s[i][j] == Constant.BOM) {
+          // more secure way
+          if (direct(i, j, me.x, me.y)) {
+            return true;
+          }
+          /*
           // bomb milik musuh
           if (bombs[i][j].owner.key != me.key) {
             if (direct(i, j, me.x, me.y)) {
@@ -589,6 +611,7 @@ public class Strategy {
               return true;
             }
           }
+          */
         }
       }
     }
